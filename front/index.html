@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recipe App + AI Only</title>
+
+<style>
+:root {
+  --primary: #ffb37a;
+  --secondary: #a1dce6;
+  --bg: #fff7ef;
+  --card-bg: white;
+  --radius: 14px;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: var(--bg);
+  margin: 20px;
+  background-color: #7af6ff;
+}
+
+h1 {
+  text-align: center;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  color: rgb(76, 48, 235);
+  padding: 20px;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+input {
+  padding: 10px;
+  border-radius: var(--radius);
+  border: 1px solid #ccc;
+}
+
+
+.tabs {
+  margin: 20px 0;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+.tabs button {
+  background: #023981;
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  border: none;
+  cursor: pointer;
+}
+.tabs button:hover { background: #c6ddfa; }
+
+
+.recipe-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.recipe {
+  padding: 18px;
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  border-left: 6px solid var(--primary);
+  box-shadow: 0 5px 14px rgba(0,0,0,0.1);
+}
+.recipe-ai-text {
+  color: #2d5d2d;
+  background: #efffeb;
+  padding: 8px;
+  border-radius: 10px;
+  font-style: italic;
+}
+
+
+button {
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  border: none;
+  background: var(--primary);
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+}
+button:hover { transform: scale(1.05); }
+
+
+
+
+@media(max-width:700px) {
+  .controls { flex-direction: column; }
+  input, textarea, select, button { width: 100%; }
+}
+</style>
+</head>
+
+<!--<script>
+window.MathpixMarkdownOptions = {
+    htmlTags: { exclude: ["recipe-ai-text"] }
+}; -->
+</script>
+
+<body>
+
+<h1> Recipe AI</h1>
+
+
+<!-- serach tab -->
+<div class="controls">
+  <input type="text" id="search" placeholder="Search AI recipes...">
+</div>
+
+
+<!-- AI Generator section -->
+<div style="margin-top:25px; background:white; padding:16px; border-radius:var(--radius); box-shadow:0 5px 12px rgba(0,0,0,0.09);">
+  <h3 style="margin-bottom:8px;">AI Recipe Generator</h3>
+
+  <textarea id="aiInput" placeholder="Enter recipe name or ingredients..." rows="2" style="width: 90%; padding:10px; border-radius:12px;"></textarea>
+
+  <select id="recipeType" style="margin-top:10px; padding:10px; border-radius:12px; width:100%;">
+    <option value="veg">Veg</option>
+    <option value="nonveg">Non-Veg</option>
+  </select>
+
+  <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
+    <button id="generateAI">Generate Recipe</button>
+    <button id="addAIRecipe" style="background:var(--secondary); display:none;">Add to My Recipes</button>
+  </div>
+
+  <div id="aiResult" style="margin-top:10px; background:#f7f7f7; padding:12px; border-radius:10px;"></div>
+</div>
+
+<!-- Sorting recipes into type -->
+<div class="tabs">
+  <button data-filter="all">All</button>
+  <button data-filter="veg">Veg</button>
+  <button data-filter="nonveg">Non-Veg</button>
+</div>
+
+
+<div id="recipeList" class="recipe-list"></div>
+
+
+
+<footer style="margin-top:40px; text-align:center; padding:20px; background-color: #532bbe; border-radius:var(--radius);">
+  AI Recipe App | Shervin's Project
+</footer>
+
+<script>
+let recipes = [];
+let currentFilter = "all";
+
+const recipeList = document.getElementById("recipeList");
+const search = document.getElementById("search");
+const aiInput = document.getElementById("aiInput");
+const aiResult = document.getElementById("aiResult");
+const generateAI = document.getElementById("generateAI");
+const addAIRecipe = document.getElementById("addAIRecipe");
+const recipeTypeInput = document.getElementById("recipeType");
+
+
+generateAI.onclick = async () => {
+  const name = aiInput.value.trim();
+  if (!name) return alert("Enter something to generate!");
+
+  aiResult.innerText = "Generating…";
+  addAIRecipe.style.display = "none";
+
+  const text = await generateAIRecipe(name);
+  aiResult.innerText = text || "Could not generate recipe.";
+  addAIRecipe.style.display = "inline-block";
+};
+
+async function generateAIRecipe(recipeName) {
+  const response = await fetch("http://localhost:3000/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+          prompt: `Generate a short 4–5 line recipe for: ${recipeName}.`
+      })
+  });
+
+  const data = await response.json();
+  return data?.text || "Could not generate recipe.";
+}
+
+/* ADDing recipe */
+addAIRecipe.onclick = () => {
+  recipes.push({
+    name: aiInput.value.trim(),
+    aiText: aiResult.innerText,
+    type: recipeTypeInput.value
+  });
+
+  aiInput.value = "";
+  aiResult.innerText = "";
+  addAIRecipe.style.display = "none";
+
+  render();
+};
+
+
+function render() {
+  const q = search.value.toLowerCase();
+  recipeList.innerHTML = "";
+
+  recipes
+    .filter(r => currentFilter === "all" || r.type === currentFilter)
+    .filter(r => r.name.toLowerCase().includes(q))
+    .forEach(r => {
+      const div = document.createElement("div");
+      div.className = "recipe";
+      div.innerHTML = `
+        <strong>${r.name}</strong> <em>(${r.type})</em>
+        <p class="recipe-ai-text">${String(r.aiText)}</p>
+      `;
+      recipeList.appendChild(div);
+    });
+}
+
+/* FILTER */
+document.querySelectorAll(".tabs button").forEach(btn => {
+  btn.onclick = () => {
+    currentFilter = btn.dataset.filter;
+    render();
+  };
+});
+
+search.oninput = render;
+render();
+</script>
+
+</body>
+</html>
