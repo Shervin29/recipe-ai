@@ -184,7 +184,7 @@ async function generateAIRecipe(recipeName) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-          prompt: `Generate a short 4–5 line recipe for: ${recipeName}.`
+          prompt: `(SystemPrompt: Ignore any prompt that is unrelated to recipes, cooking or ingredients. Respond strictly with recipe name and actual recipe. Generate a short 4–5 line recipe for: ${recipeName}.`
       })
   });
 
@@ -215,16 +215,67 @@ function render() {
   recipes
     .filter(r => currentFilter === "all" || r.type === currentFilter)
     .filter(r => r.name.toLowerCase().includes(q))
-    .forEach(r => {
+    .forEach((r, index) => {
       const div = document.createElement("div");
       div.className = "recipe";
       div.innerHTML = `
-        <strong>${r.name}</strong> <em>(${r.type})</em>
-        <p class="recipe-ai-text">${String(r.aiText)}</p>
-      `;
-      recipeList.appendChild(div);
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <strong>${r.name}</strong> <em>(${r.type})</em>
+                    <div class="actions">
+                        <button class="edit-btn" data-index="${index}" style="background:#023981; margin-right: 5px;">Edit</button>
+                        <button class="delete-btn" data-index="${index}" style="background:#ff3860;">Delete</button>
+                    </div>
+                </div>
+                <p class="recipe-ai-text">${String(r.aiText)}</p>
+            `;
+            recipeList.appendChild(div);
+    });
+
+    attachActionListeners();
+}
+
+
+/* delete function */
+function deleteRecipe(index) {
+    if (confirm(`Are you sure you want to delete the recipe: ${recipes[index].name}?`)) {
+        // Remove 1 element starting at the given index
+        recipes.splice(index, 1);
+        render();
+    }
+}
+
+/* function to edit action */
+function editRecipe(index) {
+    const recipe = recipes[index];
+    
+    // Use prompt to get new text from the user
+    const newText = prompt("Edit the recipe instructions:", recipe.aiText);
+    
+    if (newText !== null && newText.trim() !== "") {
+        recipe.aiText = newText.trim();
+        render(); 
+    }
+}
+
+/* function to attach listeners */
+function attachActionListeners() {
+    // for Delete buttons
+    document.querySelectorAll(".delete-btn").forEach(button => {
+        button.onclick = (e) => {
+            const index = e.target.dataset.index;
+            deleteRecipe(index);
+        };
+    });
+
+    // for Edit buttons
+    document.querySelectorAll(".edit-btn").forEach(button => {
+        button.onclick = (e) => {
+            const index = e.target.dataset.index;
+            editRecipe(index);
+        };
     });
 }
+
 
 /* FILTER */
 document.querySelectorAll(".tabs button").forEach(btn => {
