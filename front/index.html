@@ -23,13 +23,17 @@
     }
 
     h1 {
-      text-align: center;
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-      color: rgb(76, 48, 235);
-      padding: 20px;
-      border-radius: var(--radius);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
+  display: flex;             
+  align-items: center;       
+  justify-content: flex-start; 
+  gap: 15px;                 
+  
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  color: rgb(76, 48, 235);
+  padding: 10px 20px;     
+  border-radius: var(--radius);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
 
 
     .controls {
@@ -102,6 +106,13 @@
       transform: scale(1.05);
     }
 
+    #header-logo {
+  height: 90px;              /* Fixed height keeps the header consistent */
+  width: auto;
+  border-radius: 8px;        /* Optional: rounds the logo corners */
+  object-fit: contain;
+}
+
 
 
 
@@ -125,7 +136,10 @@
 
 <body>
 
-  <h1> Recipe AI</h1>
+  <h1> <img src="LOGO.png" alt="logo" height="70px" id="header-logo"> Recipe AI
+    
+  </h1> 
+  
 
   <div>
 
