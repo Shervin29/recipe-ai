@@ -1,7 +1,7 @@
 Recipe AI
 
 
-Recipe AI is a lightweight web application that utilizes Google's Gemini 2.0 Flash model to generate culinary recipes on demand. The application allows users to input ingredients or dish names, generates a concise recipe via a Node.js backend, and provides a management interface to save, filter, and edit recipes.
+Recipe AI is a lightweight web application that utilizes Google's Gemini 2.5 Flash model to generate culinary recipes on demand. The application allows users to input ingredients or dish names, generates a concise recipe via a Node.js backend, and provides a management interface to save, filter, and edit recipes.
 
 Features
 AI Generation: Integrates with Gemini 2.0 Flash for high-speed, relevant recipe creation.
