@@ -42,4 +42,6 @@ app.post("/generate", async (req, res) => {
 });
 
 const PORT = 3000;
-app.listen(PORT, () => console.log(`🚀 Modern Recipe Server at http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(` Modern Recipe Server at http://localhost:${PORT}`));
+
+

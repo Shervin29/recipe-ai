@@ -1,333 +1,388 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Recipe App + AI</title>
-
+  <title>Recipe AI | Premium Cooking Assistant</title>
   <style>
     :root {
-      --primary: #ffb37a;
-      --secondary: #a1dce6;
-      --bg: #fff7ef;
-      --card-bg: white;
-      --radius: 14px;
+      --primary: #6366f1; 
+      --primary-hover: #4f46e5;
+      --secondary: #0ea5e9; 
+      --bg: #84a8cc;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --radius: 16px;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
     }
 
+    * { box-sizing: border-box; transition: all 0.2s ease; }
+
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       background: var(--bg);
-      margin: 20px;
-      background-color: #7af6ff;
+      color: var(--text-main);
+      margin: 0;
+      padding: 20px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: white;
+      padding: 15px 25px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 25px;
     }
 
     h1 {
+      margin: 0;
+      font-size: 1.5rem;
       display: flex;
       align-items: center;
-      justify-content: flex-start;
-      gap: 15px;
-
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-      color: rgb(76, 48, 235);
-      padding: 10px 20px;
-      border-radius: var(--radius);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
-
-
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    input {
-      padding: 10px;
-      border-radius: var(--radius);
-      border: 1px solid #ccc;
-    }
-
-    .tabs {
-      margin: 20px 0;
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-    }
-
-    .tabs button {
-      background: #023981;
-      padding: 6px 12px;
-      border-radius: var(--radius);
-      border: none;
-      cursor: pointer;
-    }
-
-    .tabs button:hover {
-      background: #c6ddfa;
-    }
-
-
-    .recipe-list {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    .recipe {
-      padding: 18px;
-      background: var(--card-bg);
-      border-radius: var(--radius);
-      border-left: 6px solid var(--primary);
-      box-shadow: 0 5px 14px rgba(0, 0, 0, 0.1);
-    }
-
-    .recipe-ai-text {
-      color: #2d5d2d;
-      background: #efffeb;
-      padding: 8px;
-      border-radius: 10px;
-      font-style: italic;
-    }
-
-
-    button {
-      padding: 10px 14px;
-      border-radius: var(--radius);
-      border: none;
-      background: var(--primary);
-      color: white;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    button:hover {
-      transform: scale(1.05);
+      gap: 12px;
+      color: var(--primary);
     }
 
     #header-logo {
-      height: 90px;
+      height: 45px;
       width: auto;
-      border-radius: 8px;
-      object-fit: contain;
+      border-radius: 10px;
     }
 
+    .hero-banner {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 25px;
+    }
 
+    /* Generator Section */
+    .generator-card {
+      background: white;
+      padding: 25px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid #e2e8f0;
+      margin-bottom: 30px;
+    }
 
+    .generator-card h3 {
+      margin-top: 0;
+      font-size: 1.2rem;
+      color: var(--text-main);
+    }
 
-    @media(max-width:700px) {
-      .controls {
-        flex-direction: column;
-      }
+    textarea, input, select {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      font-size: 1rem;
+      background: #fdfdfd;
+    }
 
-      input,
-      textarea,
-      select,
-      button {
-        width: 100%;
-      }
+    textarea:focus, input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    button {
+      padding: 12px 20px;
+      border-radius: 12px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    #generateAI { background: var(--primary); color: white; }
+    #generateAI:hover { background: var(--primary-hover); transform: translateY(-2px); }
+
+    #addAIRecipe { background: #10b981; color: white; }
+
+    #aiResult {
+      margin-top: 15px;
+      background: #f1f5f9;
+      padding: 15px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      color: #334155;
+      border-left: 4px solid var(--primary);
+    }
+
+    /* Filters & Search */
+    .search-bar { margin-bottom: 20px; }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 25px;
+      background: #e2e8f0;
+      padding: 5px;
+      border-radius: 14px;
+      width: fit-content;
+    }
+
+    .tabs button {
+      padding: 8px 18px;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .tabs button.active {
+      background: rgb(1, 42, 83);
+      color: var(--primary);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    /* Recipe List */
+    .recipe-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .recipe {
+      background: white;
+      padding: 20px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid #f1f5f9;
+    }
+
+    .recipe-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .recipe-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .recipe-badge {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: #f1f5f9;
+      color: var(--text-muted);
+      font-weight: bold;
+    }
+
+    .recipe-ai-text {
+      background: #f8fafc;
+      padding: 12px;
+      border-radius: 10px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      border: 1px dashed #e2e8f0;
+      margin: 0;
+    }
+
+    .actions { display: flex; gap: 8px; }
+    .edit-btn { background: #0665c4; color: var(--text-main); padding: 8px 12px; font-size: 0.8rem; }
+    .delete-btn { background: #0665c4; color: #ef4444; padding: 8px 12px; font-size: 0.8rem; }
+
+    footer {
+      margin-top: 50px;
+      padding: 30px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      text-align: center;
+    }
+
+    @media(max-width:600px) {
+      .btn-group { flex-direction: column; }
     }
   </style>
 </head>
-
-
-</script>
-
 <body>
 
-  <h1> <img src="LOGO.png" alt="logo" height="70px" id="header-logo"> Recipe AI
+<div class="container">
+  <header>
+    <h1><img src="LOGO.png" alt="logo" id="header-logo"> Recipe AI</h1>
+  </header>
 
-  </h1>
+  <img src="https://t4.ftcdn.net/jpg/01/68/21/01/360_F_168210118_HWgLB3ZCJS9w9qjdpzy37itHZcopgyon.jpg" alt="Food" class="hero-banner">
 
-
-  <div>
-
-    <img src="https://t4.ftcdn.net/jpg/01/68/21/01/360_F_168210118_HWgLB3ZCJS9w9qjdpzy37itHZcopgyon.jpg"
-      alt="Food items" height="200px" width="99%">
-
-  </div>
-
-
-  <!-- serach tab -->
-  <div class="controls">
-    <input type="text" id="search" placeholder="Search AI recipes...">
-  </div>
-
-
-  <!-- AI Generator section -->
-  <div
-    style="margin-top:25px; background:white; padding:16px; border-radius:var(--radius); box-shadow:0 5px 12px rgba(0,0,0,0.09);">
-    <h3 style="margin-bottom:8px;">AI Recipe Generator</h3>
-
-    <textarea id="aiInput" placeholder="Enter recipe name or ingredients..." rows="2"
-      style="width: 90%; padding:10px; border-radius:12px;"></textarea>
-
-    <select id="recipeType" style="margin-top:10px; padding:10px; border-radius:12px; width:100%;">
-      <option value="veg">Veg 🥦</option>
-      <option value="nonveg">Non-Veg 🍖 </option>
-    </select>
-
-    <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
+  <div class="generator-card">
+    <h3>✨ AI Recipe Generator</h3>
+    <textarea id="aiInput" placeholder="What would you like to cook? (e.g. Spicy Paneer Pasta)" rows="2"></textarea>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+      <select id="recipeType">
+        <option value="veg">Vegetarian 🥦</option>
+        <option value="nonveg">Non-Veg 🍖</option>
+      </select>
       <button id="generateAI">Generate Recipe</button>
-      <button id="addAIRecipe" style="background:var(--secondary); display:none;">Add to My Recipes</button>
     </div>
 
-    <div id="aiResult" style="margin-top:10px; background:#f7f7f7; padding:12px; border-radius:10px;"></div>
+    <div id="aiResult" style="display:none;"></div>
+    <div class="btn-group">
+      <button id="addAIRecipe" style="display:none; width: 100%;">Save to My Collection</button>
+    </div>
   </div>
 
-  <!-- Sorting recipes into type -->
+  <div class="search-bar">
+    <input type="text" id="search" placeholder="🔍 Search saved recipes...">
+  </div>
+
   <div class="tabs">
-    <button data-filter="all">All</button>
+    <button class="active" data-filter="all">All</button>
     <button data-filter="veg">Veg</button>
     <button data-filter="nonveg">Non-Veg</button>
   </div>
 
-
   <div id="recipeList" class="recipe-list"></div>
 
-
-
-  <footer
-    style="margin-top:40px; text-align:center; padding:20px; background-color: #532bbe; border-radius:var(--radius);">
-    AI Recipe App | Shervin's Project
+  <footer>
+    &copy; 2024 Recipe AI | Modernized Cooking Experience
   </footer>
+</div>
 
-  <script>
-    let recipes = [];
-    let currentFilter = "all";
+<script>
+  let recipes = [];
+  let currentFilter = "all";
 
-    const recipeList = document.getElementById("recipeList");
-    const search = document.getElementById("search");
-    const aiInput = document.getElementById("aiInput");
-    const aiResult = document.getElementById("aiResult");
-    const generateAI = document.getElementById("generateAI");
-    const addAIRecipe = document.getElementById("addAIRecipe");
-    const recipeTypeInput = document.getElementById("recipeType");
+  const recipeList = document.getElementById("recipeList");
+  const search = document.getElementById("search");
+  const aiInput = document.getElementById("aiInput");
+  const aiResult = document.getElementById("aiResult");
+  const generateAI = document.getElementById("generateAI");
+  const addAIRecipe = document.getElementById("addAIRecipe");
+  const recipeTypeInput = document.getElementById("recipeType");
 
+  generateAI.onclick = async () => {
+    const name = aiInput.value.trim();
+    if (!name) return alert("Please enter a dish name!");
 
-    generateAI.onclick = async () => {
-      const name = aiInput.value.trim();
-      if (!name) return alert("Enter something to generate!");
+    aiResult.style.display = "block";
+    aiResult.innerText = "Working some magic...";
+    addAIRecipe.style.display = "none";
 
-      aiResult.innerText = "Generating…";
-      addAIRecipe.style.display = "none";
+    const text = await generateAIRecipe(name);
+    aiResult.innerText = text;
+    addAIRecipe.style.display = "block";
+  };
 
-      const text = await generateAIRecipe(name);
-      aiResult.innerText = text || "Could not generate recipe.";
-      addAIRecipe.style.display = "inline-block";
-    };
-
-    async function generateAIRecipe(recipeName) {
+  async function generateAIRecipe(recipeName) {
+    try {
       const response = await fetch("http://localhost:3000/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          prompt: `(SystemPrompt: Ignore any prompt that is unrelated to recipes, cooking or ingredients. Respond strictly with recipe name and actual recipe. Generate a short 4–5 line recipe for: ${recipeName}.`
+          prompt: `Strictly provide a cooking recipe. Generate a short 4–5 line recipe for: ${recipeName}.`
         })
       });
-
       const data = await response.json();
       return data?.text || "Could not generate recipe.";
+    } catch (e) {
+      return "Connection error. Is the server running?";
     }
+  }
 
-    // ADDing recipe 
-    addAIRecipe.onclick = () => {
-      recipes.push({
-        name: aiInput.value.trim(),
-        aiText: aiResult.innerText,
-        type: recipeTypeInput.value
+  addAIRecipe.onclick = () => {
+    recipes.push({
+      name: aiInput.value.trim(),
+      aiText: aiResult.innerText,
+      type: recipeTypeInput.value
+    });
+    aiInput.value = "";
+    aiResult.style.display = "none";
+    addAIRecipe.style.display = "none";
+    render();
+  };
+
+  function render() {
+    const q = search.value.toLowerCase();
+    recipeList.innerHTML = "";
+
+    recipes
+      .filter(r => currentFilter === "all" || r.type === currentFilter)
+      .filter(r => r.name.toLowerCase().includes(q))
+      .forEach((r, index) => {
+        const div = document.createElement("div");
+        div.className = "recipe";
+        div.innerHTML = `
+          <div class="recipe-header">
+            <div>
+              <div class="recipe-badge">${r.type}</div>
+              <div class="recipe-title">${r.name}</div>
+            </div>
+            <div class="actions">
+              <button class="edit-btn" data-index="${index}">Edit</button>
+              <button class="delete-btn" data-index="${index}">Delete</button>
+            </div>
+          </div>
+          <p class="recipe-ai-text">${r.aiText}</p>
+        `;
+        recipeList.appendChild(div);
       });
+    attachActionListeners();
+  }
 
-      aiInput.value = "";
-      aiResult.innerText = "";
-      addAIRecipe.style.display = "none";
-
-      render();
-    };
-
-
-    function render() {
-      const q = search.value.toLowerCase();
-      recipeList.innerHTML = "";
-
-      recipes
-        .filter(r => currentFilter === "all" || r.type === currentFilter)
-        .filter(r => r.name.toLowerCase().includes(q))
-        .forEach((r, index) => {
-          const div = document.createElement("div");
-          div.className = "recipe";
-          div.innerHTML = `
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <strong>${r.name}</strong> <em>(${r.type})</em>
-                    <div class="actions">
-                        <button class="edit-btn" data-index="${index}" style="background:#023981; margin-right: 5px;">Edit</button>
-                        <button class="delete-btn" data-index="${index}" style="background:#ff3860;">Delete</button>
-                    </div>
-                </div>
-                <p class="recipe-ai-text">${String(r.aiText)}</p>
-            `;
-          recipeList.appendChild(div);
-        });
-
-      attachActionListeners();
-    }
-
-
-    /* delete function */
-    function deleteRecipe(index) {
-      if (confirm(`Are you sure you want to delete the recipe: ${recipes[index].name}?`)) {
-        // Remove 1 element starting at the given index
-        recipes.splice(index, 1);
-        render();
-      }
-    }
-
-    /* function to edit action */
-    function editRecipe(index) {
-      const recipe = recipes[index];
-
-      // Use prompt to get new text from the user
-      const newText = prompt("Edit the recipe instructions:", recipe.aiText);
-
-      if (newText !== null && newText.trim() !== "") {
-        recipe.aiText = newText.trim();
-        render();
-      }
-    }
-
-    /* function to attach listeners */
-    function attachActionListeners() {
-      // for Delete buttons
-      document.querySelectorAll(".delete-btn").forEach(button => {
-        button.onclick = (e) => {
-          const index = e.target.dataset.index;
-          deleteRecipe(index);
-        };
-      });
-
-      // for Edit buttons
-      document.querySelectorAll(".edit-btn").forEach(button => {
-        button.onclick = (e) => {
-          const index = e.target.dataset.index;
-          editRecipe(index);
-        };
-      });
-    }
-
-
-    /* FILTER */
-    document.querySelectorAll(".tabs button").forEach(btn => {
-      btn.onclick = () => {
-        currentFilter = btn.dataset.filter;
-        render();
+  function attachActionListeners() {
+    document.querySelectorAll(".delete-btn").forEach(btn => {
+      btn.onclick = (e) => {
+        const idx = e.target.dataset.index;
+        if(confirm("Remove this recipe?")) {
+          recipes.splice(idx, 1);
+          render();
+        }
       };
     });
 
-    search.oninput = render;
-    render();
-  </script>
+    document.querySelectorAll(".edit-btn").forEach(btn => {
+      btn.onclick = (e) => {
+        const idx = e.target.dataset.index;
+        const newVal = prompt("Edit instructions:", recipes[idx].aiText);
+        if (newVal) {
+          recipes[idx].aiText = newVal;
+          render();
+        }
+      };
+    });
+  }
 
+  document.querySelectorAll(".tabs button").forEach(btn => {
+    btn.onclick = () => {
+      document.querySelector(".tabs button.active").classList.remove("active");
+      btn.classList.add("active");
+      currentFilter = btn.dataset.filter;
+      render();
+    };
+  });
+
+  search.oninput = render;
+  render();
+</script>
 </body>
-
 </html>
+
