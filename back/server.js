@@ -1,12 +1,11 @@
 import express from "express";
 import fetch from "node-fetch";
 import cors from "cors";
+import 'dotenv/config.js';
 
 const app = express();
 app.use(express.json());
 app.use(cors());
-
-import 'dotenv/config.js';
 
 const API_KEY = process.env.API_KEY;
 
@@ -15,7 +14,7 @@ app.post("/generate", async (req, res) => {
 
   try {
     const response = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent",
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent",
       {
         method: "POST",
         headers: {
@@ -29,16 +28,18 @@ app.post("/generate", async (req, res) => {
     );
 
     const data = await response.json();
-    const recipeText =
-      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-      "Could not generate recipe.";
+    
+    
+    const recipeText = data.candidates?.[0]?.content?.parts?.[0]?.text 
+      || "I'm sorry, I couldn't generate that recipe. Please try another dish.";
 
     res.json({ text: recipeText });
 
   } catch (err) {
-    console.error(err);
-    res.json({ text: "Server error while generating recipe." });
+    console.error("API Error:", err);
+    res.status(500).json({ text: "Server error. Please check your API key and connection." });
   }
 });
 
-app.listen(3000, () => console.log("Server running on http://localhost:3000"));
+const PORT = 3000;
+app.listen(PORT, () => console.log(`🚀 Modern Recipe Server at http://localhost:${PORT}`));
